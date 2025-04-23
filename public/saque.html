@@ -70,6 +70,15 @@
       flex-wrap: wrap;
     }
 
+    .icones-pix div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 60px;
+      max-width: 80px;
+    }
+
     .icones-pix i {
       font-size: 2.5em;
       cursor: pointer;
@@ -78,14 +87,17 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       transition: transform 0.3s;
-      flex: 1;
-      min-width: 60px;
-      max-width: 80px;
       text-align: center;
     }
 
     .icones-pix i:hover {
       transform: scale(1.1);
+    }
+
+    .icones-pix span {
+      margin-top: 6px;
+      font-size: 0.9em;
+      color: #333;
     }
 
     .input-container {
@@ -228,10 +240,22 @@
     <div class="selecionar-chave">
       <p>Selecione seu tipo de chave PIX</p>
       <div class="icones-pix">
-        <i class="material-icons">account_balance</i> <!-- CPF/CNPJ -->
-        <i class="material-icons">phone</i> <!-- Telefone -->
-        <i class="material-icons">email</i> <!-- Email -->
-        <i class="material-icons">key</i> <!-- Chave aleatória -->
+        <div>
+          <i class="material-icons">account_balance</i>
+          <span>CPF/CNPJ</span>
+        </div>
+        <div>
+          <i class="material-icons">phone</i>
+          <span>Telefone</span>
+        </div>
+        <div>
+          <i class="material-icons">email</i>
+          <span>Email</span>
+        </div>
+        <div>
+          <i class="material-icons">key</i>
+          <span>Aleatória</span>
+        </div>
       </div>
     </div>
 

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Saque - Spotify Opina</title>
+  <link rel="icon" type="image/webp" href="favin.webp" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+
+    .header {
+      background: #fff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      height: 32px;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .saldo {
+      background: #00e676;
+      color: #fff;
+      font-size: 2.5em;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      width: 100%;
+    }
+
+    .selecionar-chave {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.2em;
+    }
+
+    .icones-pix {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .icones-pix i {
+      font-size: 2.5em;
+      cursor: pointer;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+      flex: 1;
+      min-width: 60px;
+      max-width: 80px;
+      text-align: center;
+    }
+
+    .icones-pix i:hover {
+      transform: scale(1.1);
+    }
+
+    .input-container {
+      margin: 15px 0;
+      text-align: center;
+      width: 100%;
+    }
+
+    .input-container input {
+      width: 90%;
+      max-width: 400px;
+      padding: 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1em;
+    }
+
+    .btn-saque {
+      background: #00e676;
+      color: #fff;
+      padding: 16px 28px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-saque:hover {
+      background: #00c853;
+    }
+
+    .btn-saque.desabilitado {
+      background: #d3d3d3;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.96);
+      color: #333;
+      padding: 24px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+    }
+
+    .popup i {
+      font-size: 3em;
+      margin-bottom: 16px;
+      color: #00e676;
+    }
+
+    .popup p {
+      text-align: center;
+      margin-bottom: 16px;
+      font-size: 1.1em;
+      line-height: 1.5;
+    }
+
+    .popup button {
+      background: #00e676;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .popup button:hover {
+      background: #00c853;
+    }
+
+    footer {
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      box-shadow: 0 -1px 4px rgba(0,0,0,0.1);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    footer .icon {
+      flex: 1;
+      text-align: center;
+      color: #666;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    footer .icon.active {
+      color: #00e676;
+    }
+
+    footer .material-icons {
+      font-size: 28px;
+    }
+
+    @media (min-width: 768px) {
+      .saldo {
+        font-size: 3em;
+      }
+
+      .btn-saque {
+        font-size: 1.4em;
+      }
+
+      .popup p {
+        font-size: 1.15em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="favin.webp" alt="Logo" class="logo" />
+  </header>
+
+  <main>
+    <!-- Saldo -->
+    <div class="saldo" id="saldo">
+      R$ 0,00
+    </div>
+
+    <!-- Selecionar chave PIX -->
+    <div class="selecionar-chave">
+      <p>Selecione seu tipo de chave PIX</p>
+      <div class="icones-pix">
+        <i class="material-icons">account_balance</i> <!-- CPF/CNPJ -->
+        <i class="material-icons">phone</i> <!-- Telefone -->
+        <i class="material-icons">email</i> <!-- Email -->
+        <i class="material-icons">key</i> <!-- Chave aleatória -->
+      </div>
+    </div>
+
+    <!-- Campos -->
+    <div class="input-container">
+      <input type="text" id="chave-pix" placeholder="Digite sua chave PIX" />
+      <input type="text" id="valor" placeholder="Valor do saque" />
+    </div>
+
+    <div class="input-container">
+      <button id="btn-saque" class="btn-saque">Realizar Saque</button>
+    </div>
+  </main>
+
+  <!-- Popup -->
+  <div id="popup" class="popup" style="display: none;">
+    <i class="material-icons">lock</i>
+    <p>DESBLOQUEAR SEU SALDO</p>
+    <p>Usamos uma taxa anti-fraudes para evitar abusos. Fique tranquilo, você receberá o valor da taxa de volta junto ao valor do seu saque. Esta é apenas uma validação de segurança para confirmar que você é humano.</p>
+    <button id="btn-desbloquear" onclick="location.href='vsl.html'">Desbloquear Agora</button>
+  </div>
+
+  <!-- Rodapé -->
+  <footer>
+    <div class="icon" onclick="location.href='home.html'"><span class="material-icons">home</span></div>
+    <div class="icon active"><span class="material-icons">paid</span></div>
+    <div class="icon" onclick="location.href='sobre.html'"><span class="material-icons">person</span></div>
+  </footer>
+
+  <script>
+    function carregarSaldo() {
+      const saldo = parseFloat(localStorage.getItem("saldo") || "0");
+      document.getElementById("saldo").innerText = `R$ ${saldo.toFixed(2).replace('.', ',')}`;
+    }
+
+    document.getElementById("btn-saque").onclick = function () {
+      const chavePix = document.getElementById("chave-pix").value.trim();
+      const valor = parseFloat(document.getElementById("valor").value.replace(",", "."));
+
+      if (isNaN(valor) || valor <= 0 || chavePix === "") {
+        alert("Preencha todos os campos corretamente!");
+        return;
+      }
+
+      const saldoAtual = parseFloat(localStorage.getItem("saldo") || "0");
+      if (valor > saldoAtual) {
+        alert("Saldo insuficiente para realizar o saque!");
+        return;
+      }
+
+      document.getElementById("btn-saque").classList.add("desabilitado");
+      document.getElementById("popup").style.display = "flex";
+    };
+
+    carregarSaldo();
+  </script>
+</body>
+</html>

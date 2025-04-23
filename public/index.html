@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spotify Opina</title>
+  <link rel="icon" type="image/webp" href="favin.webp" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #ffffff;
+      color: #111;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    header img {
+      width: 180px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #1db954;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .sub {
+      text-align: center;
+      font-size: 16px;
+      color: #444;
+      margin-bottom: 20px;
+    }
+
+    video {
+      width: 100%;
+      max-height: 400px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+    }
+
+    .form {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    input[type="email"] {
+      width: 90%;
+      max-width: 400px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      background-color: #1db954;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      font-size: 17px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #159d48;
+    }
+
+    .comentarios {
+      background-color: #f9f9f9;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 40px;
+    }
+
+    .comentario {
+      background: #fff;
+      padding: 12px 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.05);
+      border-left: 4px solid #1db954;
+    }
+
+    .comentario strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 15px;
+      color: #1db954;
+    }
+
+    .notificacao {
+      position: fixed;
+      bottom: 15px;
+      left: 15px;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.15);
+      font-size: 14px;
+      z-index: 999;
+      display: none;
+      animation: fadeInOut 5s ease-in-out;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(20px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(20px); }
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 22px;
+      }
+
+      video {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="notificacao" id="notificacao"></div>
+
+  <div class="container">
+    <header>
+      <img src="spotify.svg" alt="Spotify Opina" />
+    </header>
+
+    <h1>Ganhe Dinheiro Dando Opiniões sobre Cantores</h1>
+    <p class="sub">Responda pesquisas e receba de R$5 a R$20 direto no Pix. Rápido, fácil e divertido.</p>
+
+    <video src="video.MOV" controls></video>
+
+    <div class="form">
+      <input type="email" id="email" placeholder="Digite seu e-mail para começar" />
+      <br>
+      <button onclick="logar()">Começar Agora</button>
+    </div>
+
+    <div class="comentarios">
+      <div class="comentario">
+        <strong>Mariana Silva</strong>
+        Acabei de sacar R$140, muito bom mesmo!
+      </div>
+      <div class="comentario">
+        <strong>Lucas Andrade</strong>
+        Já fiz R$280 em 2 dias! Super confiável.
+      </div>
+      <div class="comentario">
+        <strong>Patrícia Costa</strong>
+        Recebi em menos de 24h no Pix.
+      </div>
+      <div class="comentario">
+        <strong>Vinícius Rocha</strong>
+        Incrível! Achei que fosse enganação, mas é real!
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function logar() {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        alert("Digite seu e-mail.");
+        return;
+      }
+      localStorage.setItem("spotify_email", email);
+      window.location.href = "home.html";
+    }
+
+    const nomes = [
+      "Lucas Silva", "Ana Costa", "João Oliveira", "Mariana Souza",
+      "Felipe Pereira", "Clara Mendes", "Carlos Eduardo", "Julia Rocha",
+      "Mateus Almeida", "Beatriz Lima", "Gabriel Santos", "Maria Eduarda",
+      "Rafael Barbosa", "Larissa Fernandes", "Pedro Henrique", "Isabela Nunes",
+      "Guilherme Ribeiro", "Fernanda Carvalho", "Thiago Almeida", "Camila Borges",
+      "Bruno Machado", "Amanda Ferreira", "Vinícius Martins", "Juliana Ribeiro",
+      "Leonardo Gonçalves", "Paula Castro", "Renan Vieira", "Sabrina Cardoso",
+      "Rodrigo Teixeira", "Natália Moura", "André Monteiro", "Carolina Azevedo",
+      "Eduardo Lopes", "Tatiane Ramos", "Diego Santana", "Marcela Antunes",
+      "Ruan Rodrigues", "Vanessa Marques", "Caio Silva", "Luan Freitas",
+      "Danilo Oliveira", "Aline Dias", "Samuel Costa", "Sara Pereira",
+      "Victor Souza", "Nathalia Alves", "Alexandre Moreira", "Patrícia Lima",
+      "Marcos Vinícius", "Gabriela Campos", "Ricardo Cunha", "Emanuela Moraes"
+    ];
+
+    const valores = [100, 250, 500, 600, 1200, 2000, 800, 1300, 1900, 180];
+
+    function mostrarNotificacao() {
+      const nome = nomes[Math.floor(Math.random() * nomes.length)];
+      const valor = valores[Math.floor(Math.random() * valores.length)];
+      const notif = document.getElementById("notificacao");
+
+      notif.textContent = `${nome} acabou de sacar R$${valor},00 via Pix 🔥`;
+      notif.style.display = "block";
+
+      setTimeout(() => {
+        notif.style.display = "none";
+      }, 5000);
+    }
+
+    setInterval(mostrarNotificacao, 9000); // a cada 9 segundos
+  </script>
+</body>
+</html>

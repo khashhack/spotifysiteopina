@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Spotify Opina</title>
+  <link rel="icon" type="image/webp" href="favin.webp" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; color: #333; display: flex; flex-direction: column; min-height: 100vh; }
+
+    .header { background: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 10; }
+    .logo { height: 32px; }
+    .saldo-btn { background: #00c853; border: none; border-radius: 20px; padding: 8px 16px; color: #fff; font-weight: bold; cursor: pointer; }
+
+    
+
+    .card { background: #fff; margin: 16px auto; padding: 24px 16px; border-radius: 12px; box-shadow: 0 1px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; flex: 1; }
+    .cantor { text-align: center; margin-bottom: 16px; }
+    .cantor img { width: 100%; max-width: 240px; border-radius: 12px; }
+    .cantor p { margin-top: 8px; font-size: 1.1em; font-weight: bold; }
+
+    form .pergunta { margin-bottom: 16px; }
+    .pergunta p { margin-bottom: 8px; font-size: 0.95em; }
+    .pergunta .botoes { display: flex; justify-content: space-between; }
+    .pergunta button { flex: 1; margin: 0 4px; padding: 8px 12px; border: none; border-radius: 6px; font-size: 0.9em; cursor: pointer; transition: background 0.3s; }
+    .btn-sim, .btn-nao { background: #e0e0e0; color: #666; }
+    .btn-ativo { background: #00e676; color: #fff !important; }
+
+    #enviar-btn {
+      width: 100%; padding: 12px; background: #00e676; color: #fff; border: none; border-radius: 8px;
+      font-size: 1em; font-weight: bold; cursor: pointer; opacity: 0.6;
+    }
+    #enviar-btn:enabled { opacity: 1; }
+
+    .popup {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8); color: #fff; padding: 24px; border-radius: 12px;
+      display: flex; align-items: center; animation: fadein 0.3s ease-out; z-index: 999;
+    }
+    .popup .moeda {
+      width: 48px; height: 48px; margin-right: 12px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><circle cx="24" cy="24" r="24" fill="%23FFD700"/><text x="24" y="30" font-size="24" text-anchor="middle" fill="%23fff">\u00a2</text></svg>') no-repeat center/contain;
+    }
+
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+    .footer { background: #fff; display: flex; justify-content: space-around; padding: 12px 0; box-shadow: 0 -1px 4px rgba(0,0,0,0.1); }
+    .footer .icon { flex: 1; text-align: center; color: #666; cursor: pointer; }
+    .footer .icon.active { color: #00c853; }
+    .footer .material-icons { font-size: 28px; }
+
+    @media (max-width: 420px) {
+      .card { margin: 12px; padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="favin.webp" alt="Logo" class="logo" />
+    <button id="saldo-btn" class="saldo-btn">R$ 0,00</button>
+  </header>
+
+  <main class="card">
+    <div class="cantor">
+      <img id="imgCantor" src="" alt="Cantor" />
+      <p id="nomeCantor">Nome do Cantor</p>
+    </div>
+    <form id="formulario"></form>
+    <button id="enviar-btn" disabled>Enviar Respostas</button>
+  </main>
+
+  <div id="popup" class="popup" style="display: none">
+    <div class="moeda"></div>
+    <div id="popup-text">Você ganhou R$0,00</div>
+  </div>
+
+  <footer class="footer">
+    <div class="icon active" onclick="location.href='home.html'"><span class="material-icons">home</span></div>
+    <div class="icon" onclick="location.href='saque.html'"><span class="material-icons">paid</span></div>
+    <div class="icon" onclick="location.href='sobre.html'"><span class="material-icons">person</span></div>
+  </footer>
+
+  <script>
+    // Lista de cantores para sorteio
+    const cantores = ["Anitta", "Luan Santana", "Ivete Sangalo", "Zezé Di Camargo", "Marília Mendonça", "Ludmilla", "Caetano Veloso", "Gilberto Gil", "Chico Buarque", "Roberto Carlos", "MC Hariel", "MC Cabelinho", "Pabllo Vittar", "MC Don Juan", "Xamã", "Matuê", "Zé Neto e Cristiano", "Gusttavo Lima", "Maiara e Maraisa", "Henrique e Juliano", "Alok", "Vintage Culture", "MC Ryan SP", "MC Kevin", "MC Livinho", "Filipe Ret", "Orochi", "Teto", "Luísa Sonza", "Jão", "Tiago Iorc", "Daniel", "Sandy", "Junior Lima", "Fernanda Brum", "Aline Barros", "Detonautas", "Skank", "Jota Quest", "Capital Inicial", "Pitty", "Emicida", "Projota", "Criolo", "Racionais MC's", "MC Poze", "Ana Castela", "Simone e Simaria", "Naiara Azevedo", "Paula Fernandes", "Fafá de Belém", "Adele", "Ed Sheeran", "Taylor Swift", "Drake", "Billie Eilish", "Rihanna", "Beyoncé", "Justin Bieber", "Harry Styles", "Bruno Mars", "Dua Lipa", "The Weeknd", "Post Malone", "Shakira", "Sia", "Lady Gaga", "Katy Perry", "Sam Smith", "Doja Cat", "Travis Scott"];
+    
+    // Função para gerar cantor aleatório e informações
+    function atualizarCantor() {
+      const cantorAtual = cantores[Math.floor(Math.random() * cantores.length)];
+      document.getElementById("nomeCantor").innerText = cantorAtual;
+
+      fetch(`https://pt.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cantorAtual)}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("imgCantor").src = data.thumbnail?.source || "https://via.placeholder.com/240x240?text=Cantor";
+        });
+
+      return cantorAtual;
+    }
+
+    // Função para gerar perguntas aleatórias
+    function atualizarPerguntas() {
+      const perguntas = [
+        "Você gosta das músicas deste cantor?",
+  "Você conhece alguma música desse artista?",
+  "Você acha que ele(a) canta bem?",
+  "Você já foi a um show dele(a)?",
+  "Você escutaria esse cantor novamente?",
+  "Você segue ele(a) nas redes sociais?",
+  "Você recomendaria ele(a) para um amigo?",
+  "Você já colocou uma música dele(a) em uma playlist sua?",
+  "Você acha que ele(a) é popular?",
+  "Você já ouviu ele(a) no rádio?",
+  "Você já viu esse cantor na TV?",
+  "Você gosta do estilo musical dele(a)?",
+  "Você acha que ele(a) tem talento?",
+  "Você escuta ele(a) com frequência?",
+  "Você conhece alguma polêmica envolvendo esse cantor?",
+  "Você prefere ele(a) cantando ao vivo?",
+  "Você acha que ele(a) merece mais reconhecimento?",
+  "Você compraria ingressos para um show dele(a)?",
+  "Você colocaria uma música dele(a) numa festa?",
+  "Você conhece a história de vida dele(a)?",
+  "Você já viu clipes desse cantor?",
+  "Você acompanha os lançamentos dele(a)?",
+  "Você já compartilhou alguma música dele(a)?",
+  "Você já chorou ouvindo uma música dele(a)?",
+  "Você conhece o gênero musical desse artista?",
+  "Você acha que ele(a) está no auge da carreira?",
+  "Você já ouviu falar desse cantor antes?",
+  "Você tem alguma lembrança especial com uma música dele(a)?",
+  "Você gosta mais das músicas antigas dele(a)?",
+  "Você ouviria uma colaboração entre esse cantor e outro famoso?"
+      ];
+
+      const perguntasSelecionadas = [];
+      while (perguntasSelecionadas.length < 3) {
+        const index = Math.floor(Math.random() * perguntas.length);
+        if (!perguntasSelecionadas.includes(perguntas[index])) {
+          perguntasSelecionadas.push(perguntas[index]);
+        }
+      }
+
+      return perguntasSelecionadas;
+    }
+
+    // Função para carregar e atualizar o saldo visual
+    function atualizarSaldoVisual(novoSaldo) {
+      document.getElementById("saldo-btn").innerText = `R$ ${novoSaldo.toFixed(2).replace('.', ',')}`;
+    }
+
+    // Função para carregar saldo salvo no localStorage
+    function carregarSaldoLocal() {
+      const saldo = parseFloat(localStorage.getItem("saldo") || "0");
+      atualizarSaldoVisual(saldo);
+    }
+
+    // Inicializar cantor e perguntas
+    let cantorAtual = atualizarCantor();
+    let perguntasSelecionadas = atualizarPerguntas();
+    
+    const respostas = [null, null, null];
+    const formulario = document.getElementById("formulario");
+
+    // Preencher formulário com as perguntas
+    perguntasSelecionadas.forEach((pergunta, i) => {
+      const div = document.createElement("div");
+      div.classList.add("pergunta");
+
+      const p = document.createElement("p");
+      p.innerText = pergunta;
+
+      const botoes = document.createElement("div");
+      botoes.className = "botoes";
+
+      const btnSim = document.createElement("button");
+      btnSim.classList.add("btn-sim");
+      btnSim.innerText = "Sim";
+
+      const btnNao = document.createElement("button");
+      btnNao.classList.add("btn-nao");
+      btnNao.innerText = "Não";
+
+      btnSim.onclick = btnNao.onclick = function (e) {
+        e.preventDefault();
+        respostas[i] = this.innerText;
+        botoes.querySelectorAll("button").forEach(b => b.classList.remove("btn-ativo"));
+        this.classList.add("btn-ativo");
+        if (respostas.every(r => r !== null)) {
+          document.getElementById("enviar-btn").disabled = false;
+        }
+      };
+
+      botoes.appendChild(btnSim);
+      botoes.appendChild(btnNao);
+      div.appendChild(p);
+      div.appendChild(botoes);
+      formulario.appendChild(div);
+    });
+
+    // Função para processar o envio das respostas
+    document.getElementById("enviar-btn").onclick = async () => {
+      const premio = Math.floor(Math.random() * (50 - 5 + 1)) + 5;
+      const saldoAtual = parseFloat(localStorage.getItem("saldo") || "0");
+      const novoSaldo = saldoAtual + premio;
+      localStorage.setItem("saldo", novoSaldo.toFixed(2));
+
+      const popup = document.getElementById("popup");
+      const popupText = document.getElementById("popup-text");
+      popup.style.display = "flex";
+      popupText.innerText = `Você ganhou R$ ${premio},00!`;
+      atualizarSaldoVisual(novoSaldo);
+      setTimeout(() => popup.style.display = "none", 3000);
+
+      // Atualiza cantor e perguntas após cada envio
+      cantorAtual = atualizarCantor();
+      perguntasSelecionadas = atualizarPerguntas();
+      formulario.innerHTML = ''; // Limpa as perguntas anteriores
+      respostas.fill(null); // Reseta as respostas
+      document.getElementById("enviar-btn").disabled = true; // Desabilita o botão até todas as respostas serem selecionadas
+      perguntasSelecionadas.forEach((pergunta, i) => {
+        const div = document.createElement("div");
+        div.classList.add("pergunta");
+
+        const p = document.createElement("p");
+        p.innerText = pergunta;
+
+        const botoes = document.createElement("div");
+        botoes.className = "botoes";
+
+        const btnSim = document.createElement("button");
+        btnSim.classList.add("btn-sim");
+        btnSim.innerText = "Sim";
+
+        const btnNao = document.createElement("button");
+        btnNao.classList.add("btn-nao");
+        btnNao.innerText = "Não";
+
+        btnSim.onclick = btnNao.onclick = function (e) {
+          e.preventDefault();
+          respostas[i] = this.innerText;
+          botoes.querySelectorAll("button").forEach(b => b.classList.remove("btn-ativo"));
+          this.classList.add("btn-ativo");
+          if (respostas.every(r => r !== null)) {
+            document.getElementById("enviar-btn").disabled = false;
+          }
+        };
+
+        botoes.appendChild(btnSim);
+        botoes.appendChild(btnNao);
+        div.appendChild(p);
+        div.appendChild(botoes);
+        formulario.appendChild(div);
+      });
+    };
+
+    carregarSaldoLocal();
+  </script>
+</body>
+</html>
